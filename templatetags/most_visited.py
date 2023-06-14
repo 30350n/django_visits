@@ -10,13 +10,13 @@ register = template.Library()
 @ttl_cache(ttl=60)
 def most_visited(n=32, days=30):
     date_threshold = timezone.now() - timedelta(days=days)
-    visits = Visit.objects.filter(timestamp__gt=date_threshold)
+    visits = Visit.objects.filter(is_crawler=False, timestamp__gt=date_threshold)
     return _most_visited(visits)[:n]
 
 @register.simple_tag
 @ttl_cache(ttl=3600)
 def most_visited_all():
-    return _most_visited(Visit.objects.all())
+    return _most_visited(Visit.objects.filter(is_crawler=False))
 
 def _most_visited(visits):
     urls = visits.values_list("url", flat=True).distinct()

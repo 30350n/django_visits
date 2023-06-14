@@ -5,6 +5,8 @@ from cachetools.func import ttl_cache
 from functools import cache
 from django.db import models
 
+from .crawler_detection import is_crawler
+
 @ttl_cache
 def get_country(ip):
     response = requests.get(f"https://geolocation-db.com/json/{ip}")
@@ -22,6 +24,7 @@ class Visit(models.Model):
     country     = models.CharField(max_length=64)
     url         = models.CharField(max_length=128)
     status_code = models.IntegerField()
+    is_crawler  = models.BooleanField()
 
     @classmethod
     def create(cls, request, response):
@@ -33,6 +36,7 @@ class Visit(models.Model):
             country=country,
             url=f"{request.get_host()}{request.path}",
             status_code=response.status_code,
+            is_crawler=is_crawler(request.META.get("HTTP_USER_AGENT", "None")),
         )
 
     def __str__(self):
