@@ -8,7 +8,7 @@ from .crawler_detection import is_crawler
 
 @ttl_cache
 def get_country(ip):
-    response = requests.get(f"https://geolocation-db.com/json/{ip}")
+    response = requests.get(f"https://geolocation-db.com/json/{ip}", timeout=5)
     return name if (name := response.json().get("country_name")) != "Not found" else None
 
 class IPAddress(models.Model):
