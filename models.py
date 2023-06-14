@@ -41,6 +41,14 @@ class URL(models.Model):
     def get_or_create(cls, url):
         return cls.objects.get_or_create(url=url)[0]
 
+class UserAgent(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=128)
+
+    @classmethod
+    def get_or_create(cls, user_agent):
+        return cls.objects.get_or_create(name=user_agent)[0]
+
 class Visit(models.Model):
     id          = models.AutoField(primary_key=True)
     timestamp   = models.DateTimeField()
@@ -49,11 +57,13 @@ class Visit(models.Model):
     url         = models.ForeignKey(URL, on_delete=models.PROTECT)
     status_code = models.IntegerField()
     is_crawler  = models.BooleanField()
+    user_agent  = models.ForeignKey(UserAgent, on_delete=models.PROTECT)
 
     @classmethod
     def create(cls, request, response):
         ip, _ = get_client_ip(request)
         country = c if ip and (c := get_country(ip)) else "unknown"
+        user_agent = request.META.get("HTTP_USER_AGENT", "None")
 
         visit = cls.objects.create(
             timestamp=timezone.now(),
@@ -61,7 +71,8 @@ class Visit(models.Model):
             country=Country.get_or_create(country),
             url=URL.get_or_create(f"{request.get_host()}{request.path}"),
             status_code=response.status_code,
-            is_crawler=is_crawler(request.META.get("HTTP_USER_AGENT", "None")),
+            is_crawler=is_crawler(user_agent),
+            user_agent=UserAgent.get_or_create(user_agent),
         )
         visit.save()
 
