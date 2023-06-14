@@ -44,12 +44,9 @@ class URL(models.Model):
 class Visit(models.Model):
     id          = models.AutoField(primary_key=True)
     timestamp   = models.DateTimeField()
-    ip          = models.GenericIPAddressField()
-    ip_fk       = models.ForeignKey(IPAddress, on_delete=models.PROTECT)
-    country     = models.CharField(max_length=64)
-    country_fk  = models.ForeignKey(Country, on_delete=models.PROTECT)
-    url         = models.CharField(max_length=128)
-    url_fk      = models.ForeignKey(URL, on_delete=models.PROTECT)
+    ip          = models.ForeignKey(IPAddress, on_delete=models.PROTECT)
+    country     = models.ForeignKey(Country, on_delete=models.PROTECT)
+    url         = models.ForeignKey(URL, on_delete=models.PROTECT)
     status_code = models.IntegerField()
     is_crawler  = models.BooleanField()
 

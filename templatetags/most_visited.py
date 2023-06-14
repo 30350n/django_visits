@@ -19,6 +19,6 @@ def most_visited_all():
     return _most_visited(Visit.objects.filter(is_crawler=False))
 
 def _most_visited(visits):
-    urls = visits.values_list("url", flat=True).distinct()
-    counts = (visits.filter(url=url).values("ip").distinct().count() for url in urls)
+    url_ids, urls = tuple(zip(*visits.values_list("url", "url__url").distinct()))
+    counts = (visits.filter(url=url).values("ip").distinct().count() for url in url_ids)
     return sorted(zip(counts, urls), reverse=True)
