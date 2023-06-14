@@ -8,7 +8,8 @@ class VisitsMiddleware:
 
     def __call__(self, request):
         response = self.get_response(request)
+
         if response.status_code in VALID_STATUS_RANGE:
-            visit = Visit.create(request, response)
-            visit.save()
-            return response
+            Visit.create(request, response)
+
+        return response
