@@ -14,6 +14,8 @@ def get_country(ip):
             return name
     except requests.Timeout:
         pass
+    except requests.RequestException as e:
+        print(f"warning, failed to get_country with: {e}")
 
     return None
 
