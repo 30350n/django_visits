@@ -21,12 +21,12 @@ def get_country(ip):
 
 class IPAddress(models.Model):
     id = models.AutoField(primary_key=True)
-    ip = models.GenericIPAddressField()
+    ip = models.GenericIPAddressField(unique=True)
     ip_hash = models.CharField(max_length=40)
 
     @classmethod
     def get_or_create(cls, ip_string):
-        ip, created = cls.objects.get_or_create(ip=ip_string) # , defaults={"ip_hash": ""}
+        ip, created = cls.objects.get_or_create(ip=ip_string)
         if created:
             ip.ip_hash = hashlib.sha1(ip_string.encode()).hexdigest()
             ip.save()
@@ -35,7 +35,7 @@ class IPAddress(models.Model):
 
 class Country(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=64)
+    name = models.CharField(max_length=64, unique=True)
 
     @classmethod
     def get_or_create(cls, country):
@@ -43,7 +43,7 @@ class Country(models.Model):
 
 class URL(models.Model):
     id = models.AutoField(primary_key=True)
-    url = models.CharField(max_length=128)
+    url = models.CharField(max_length=128, unique=True)
 
     @classmethod
     def get_or_create(cls, url):
@@ -51,7 +51,7 @@ class URL(models.Model):
 
 class UserAgent(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=128)
+    name = models.CharField(max_length=128, unique=True)
 
     @classmethod
     def get_or_create(cls, user_agent):
