@@ -9,10 +9,10 @@ from .crawler_detection import is_crawler
 @ttl_cache
 def get_country(ip):
     try:
-        response = requests.get(f"https://geolocation-db.com/json/{ip}", timeout=5)
-        if (name := response.json().get("country_name", "Not found")) != "Not found":
+        response = requests.get(f"https://ip-api.com/json/{ip}?fields=16385", timeout=5).json()
+        if response.get("status") == "success" and (name := response.get("country", None)):
             return name
-    except requests.Timeout:
+    except (requests.Timeout, ValueError):
         pass
     except requests.RequestException as e:
         print(f"warning, failed to get_country with: {e}")
