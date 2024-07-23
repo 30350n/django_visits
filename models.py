@@ -9,7 +9,7 @@ from .crawler_detection import is_crawler
 @ttl_cache
 def get_country(ip):
     try:
-        response = requests.get(f"https://ip-api.com/json/{ip}?fields=16385", timeout=5).json()
+        response = requests.get(f"http://ip-api.com/json/{ip}?fields=16385", timeout=5).json()
         if response.get("status") == "success" and (name := response.get("country", None)):
             return name
     except (requests.Timeout, ValueError):
