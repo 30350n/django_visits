@@ -1,9 +1,12 @@
+from datetime import timedelta
+
+from django import template
+from django.utils import timezone
+
 from ..models import Visit
 
-from django.utils import timezone
-from datetime import timedelta
-from django import template
 register = template.Library()
+
 
 @register.simple_tag
 def last_visits(n=128, days=7):

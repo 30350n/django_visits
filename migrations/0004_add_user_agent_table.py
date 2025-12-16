@@ -12,7 +12,6 @@ def add_user_agent(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("visits", "0003_split_into_multiple_tables"),
     ]

@@ -1,10 +1,13 @@
-import requests, hashlib
-from django.utils import timezone
-from ipware import get_client_ip
+import hashlib
+
+import requests
 from cachetools.func import ttl_cache
 from django.db import models
+from django.utils import timezone
+from ipware import get_client_ip
 
 from .crawler_detection import is_crawler
+
 
 @ttl_cache
 def get_country(ip):
@@ -18,6 +21,7 @@ def get_country(ip):
         print(f"warning, failed to get_country with: {e}")
 
     return None
+
 
 class IPAddress(models.Model):
     id = models.AutoField(primary_key=True)
@@ -33,6 +37,7 @@ class IPAddress(models.Model):
 
         return ip
 
+
 class Country(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=64, unique=True)
@@ -40,6 +45,7 @@ class Country(models.Model):
     @classmethod
     def get_or_create(cls, country):
         return cls.objects.get_or_create(name=country)[0]
+
 
 class URL(models.Model):
     id = models.AutoField(primary_key=True)
@@ -49,6 +55,7 @@ class URL(models.Model):
     def get_or_create(cls, url):
         return cls.objects.get_or_create(url=url)[0]
 
+
 class UserAgent(models.Model):
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=128, unique=True)
@@ -57,15 +64,16 @@ class UserAgent(models.Model):
     def get_or_create(cls, user_agent):
         return cls.objects.get_or_create(name=user_agent)[0]
 
+
 class Visit(models.Model):
-    id          = models.AutoField(primary_key=True)
-    timestamp   = models.DateTimeField()
-    ip          = models.ForeignKey(IPAddress, on_delete=models.PROTECT)
-    country     = models.ForeignKey(Country, on_delete=models.PROTECT)
-    url         = models.ForeignKey(URL, on_delete=models.PROTECT)
+    id = models.AutoField(primary_key=True)
+    timestamp = models.DateTimeField()
+    ip = models.ForeignKey(IPAddress, on_delete=models.PROTECT)
+    country = models.ForeignKey(Country, on_delete=models.PROTECT)
+    url = models.ForeignKey(URL, on_delete=models.PROTECT)
     status_code = models.IntegerField()
-    is_crawler  = models.BooleanField()
-    user_agent  = models.ForeignKey(UserAgent, on_delete=models.PROTECT)
+    is_crawler = models.BooleanField()
+    user_agent = models.ForeignKey(UserAgent, on_delete=models.PROTECT)
 
     @classmethod
     def create(cls, request, response):

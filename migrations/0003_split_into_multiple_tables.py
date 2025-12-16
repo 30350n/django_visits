@@ -13,8 +13,8 @@ def migrate_data(apps, schema_editor):
         visit.url_fk = URL.objects.get_or_create(url=visit.url)[0]
         visit.save()
 
-class Migration(migrations.Migration):
 
+class Migration(migrations.Migration):
     dependencies = [
         ("visits", "0002_crawler_detection"),
     ]

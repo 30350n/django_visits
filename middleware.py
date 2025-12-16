@@ -2,6 +2,7 @@ from .models import Visit
 
 VALID_STATUS_RANGE = range(200, 400)
 
+
 class VisitsMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
